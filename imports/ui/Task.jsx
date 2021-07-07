@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "@material-ui/core/Button";
 
 export const Task = ({ task, onCheckboxClick, onDeleteClick }) => {
   return (
@@ -10,7 +11,13 @@ export const Task = ({ task, onCheckboxClick, onDeleteClick }) => {
         readOnly
       />
       <span>{task.text}</span>
-      <button onClick={() => onDeleteClick(task)}>&times;</button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => onDeleteClick(task)}
+      >
+        &times;
+      </Button>
     </li>
   );
 };
