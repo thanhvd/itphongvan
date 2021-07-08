@@ -19,7 +19,7 @@ hot-module-replacement@0.2.0  # Update client in development without reloading t
 
 static-html             # Define static page content in .html files
 react-meteor-data       # React higher-order component for reactively tracking Meteor data
-dev-error-overlay
-accounts-password
+dev-error-overlay@0.1.0
+accounts-password@1.7.0
 meteortesting:mocha
 quave:testing
