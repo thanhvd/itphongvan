@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
 
 export const TaskForm = () => {
   const [text, setText] = useState("");
@@ -14,15 +17,19 @@ export const TaskForm = () => {
   };
 
   return (
-    <form className="task-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Type to add new tasks"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+    <form onSubmit={handleSubmit}>
+      <Box mb={2}>
+        <TextField
+          label="Type to add new tasks"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          fullWidth
+        />
+      </Box>
 
-      <button type="submit">Add Task</button>
+      <Button type="submit" variant="contained" color="primary">
+        Add Task
+      </Button>
     </form>
   );
 };

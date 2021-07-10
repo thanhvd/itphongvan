@@ -1,23 +1,18 @@
-import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
 import { TasksCollection } from "/imports/db/TasksCollection";
 import { TaskForm } from "../components/Task/TaskForm";
-import { Task } from "../components/Task/Task";
-
-const toggleChecked = ({ _id, isChecked }) =>
-  Meteor.call("tasks.setIsChecked", _id, !isChecked);
-
-const deleteTask = ({ _id }) => Meteor.call("tasks.remove", _id);
+import { TaskList } from "../components/Task/TaskList";
 
 export const TaskPage = () => {
   const user = useTracker(() => Meteor.user());
   const [hideCompleted, setHideCompleted] = useState(false);
-
   const hideCompletedFilter = { isChecked: { $ne: true } };
-
   const userFilter = user ? { userId: user._id } : {};
-
   const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter };
 
   const { tasks, pendingTasksCount, isLoading } = useTracker(() => {
@@ -46,47 +41,30 @@ export const TaskPage = () => {
     pendingTasksCount ? ` (${pendingTasksCount})` : ""
   }`;
 
-  const logout = () => Meteor.logout();
-
   return (
-    <div className="app">
-      <header>
-        <div className="app-bar">
-          <div className="app-header">
-            <h1>
-              📝️ To Do List
-              {pendingTasksTitle}
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      <div className="main">
-        <div className="user" onClick={logout}>
-          {user.username} 🚪
-        </div>
-
-        <TaskForm user={user} />
-
-        <div className="filter">
-          <button onClick={() => setHideCompleted(!hideCompleted)}>
-            {hideCompleted ? "Show All" : "Hide Completed"}
-          </button>
-        </div>
-
-        {isLoading && <div className="loading">loading...</div>}
-
-        <ul className="tasks">
-          {tasks.map((task) => (
-            <Task
-              key={task._id}
-              task={task}
-              onCheckboxClick={toggleChecked}
-              onDeleteClick={deleteTask}
+    <Box>
+      <Box mb={2}>
+        <Typography variant="h5">
+          📝️ To Do List
+          {pendingTasksTitle}
+        </Typography>
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TaskForm />
+          <Box mt={2}>
+            <Chip
+              label={hideCompleted ? "Show All" : "Hide Completed"}
+              variant="outlined"
+              color="primary"
+              onClick={() => setHideCompleted(!hideCompleted)}
             />
-          ))}
-        </ul>
-      </div>
-    </div>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TaskList tasks={tasks} isLoading={isLoading} />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
