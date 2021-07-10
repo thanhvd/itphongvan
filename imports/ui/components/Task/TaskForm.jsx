@@ -6,12 +6,14 @@ import * as yup from "yup";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
+import { useSnackbar } from "notistack";
 
 const schema = yup.object().shape({
   text: yup.string().required().label("Task Name"),
 });
 
 export const TaskForm = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const {
     control,
     handleSubmit,
@@ -26,7 +28,10 @@ export const TaskForm = () => {
 
   const onSubmit = ({ text }) => {
     Meteor.call("tasks.insert", text, (error) => {
-      if (!error) {
+      if (error) {
+        enqueueSnackbar(error.message, { variant: "error" });
+      } else {
+        enqueueSnackbar("Add task successfully", { variant: "success" });
         reset();
       }
     });
