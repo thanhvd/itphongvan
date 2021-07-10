@@ -1,15 +1,32 @@
 import { Meteor } from "meteor/meteor";
+import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import { useHistory, useLocation, Redirect } from "react-router-dom";
 
-export const LoginForm = () => {
+export const LoginPage = () => {
+  const user = useTracker(() => Meteor.user());
+  const history = useHistory();
+  const location = useLocation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const { from } = location.state || { from: { pathname: "/" } };
 
   const submit = (e) => {
     e.preventDefault();
 
-    Meteor.loginWithPassword(username, password);
+    Meteor.loginWithPassword(username, password, (error) => {
+      if (!error) {
+        history.replace(from);
+      } else {
+        console.log(error);
+      }
+    });
   };
+
+  if (user) {
+    return <Redirect to={{ pathname: "/" }} />;
+  }
 
   return (
     <form onSubmit={submit} className="login-form">
